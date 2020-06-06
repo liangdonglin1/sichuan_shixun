@@ -133,6 +133,9 @@ public class UserMapperTest {
 		// new UserMapperTest().selectOneByPar();
 		// new UserMapperTest().selectOneByPar();
 		new UserMapperTest().selectAll();
+		
+		System.out.println(123456);
+		
 	}
 
 }
