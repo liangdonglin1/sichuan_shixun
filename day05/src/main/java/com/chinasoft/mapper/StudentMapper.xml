@@ -1,0 +1,64 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+  PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+  "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.chinasoft.mapper.StudentMapper">
+
+	<!-- ①：取别名的方式 <select id="SelectAllStudent" resultType="student"> select 
+		id,username as user, password as pwd, phone, address, email, c_id as cid 
+		from student </select> -->
+
+	<!-- ②：使用结果集映射 -->
+	<select id="SelectAllStudent" resultMap="AllStudent">
+		select * from student
+	</select>
+
+	<resultMap type="student" id="AllStudent">
+		<result column="username" property="user" />
+		<result column="password" property="pwd" />
+		<result column="c_id" property="cid" />
+	</resultMap>
+
+
+	<!--多对一关联查询 -->
+	<!--  
+		① 嵌套结果
+		<select id="SelectOneAll" parameterType="int"
+			resultMap="studentOneAll">
+			select * from student,gender where student.c_id=gender.id and
+			student.id=#{id}
+		</select>
+		<resultMap type="student" id="studentOneAll">
+			<result column="username" property="user" />
+			<result column="password" property="pwd" />
+			<result column="c_id" property="cid" />
+			<association property="gender" javaType="gender">
+				<id column="c_id" property="id" />
+				<result column="c_name" property="name" />
+				<result column="c_teacher" property="teacher" />
+			</association>
+		</resultMap>
+	-->
+	<!-- ② 嵌套查询 -->
+	<select id="SelectOneAll" resultMap="studentOneAll"
+		parameterType="int">
+		select * from student where id =#{id}
+	</select>
+	<resultMap type="student" id="studentOneAll">
+		<result column="username" property="user" />
+		<result column="password" property="pwd" />
+		<result column="c_id" property="cid" />
+		<association property="gender" column="c_id"
+			select="selectOneGender" />
+	</resultMap>
+	<select id="selectOneGender" resultMap="GenderAll">
+		select * from gender
+		where id=#{c_id}
+	</select>
+	<resultMap type="gender" id="GenderAll">
+		<id column="id" property="id" />
+		<result column="c_name" property="name" />
+		<result column="c_teacher" property="teacher" />
+	</resultMap>
+
+</mapper>

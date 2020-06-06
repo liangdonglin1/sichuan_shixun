@@ -1,0 +1,58 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+  PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+  "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.chinasoft.mapper.GenderMapper">
+
+
+	<!-- 
+		①嵌套查询一对多 __嵌套结果
+	<select id="selectGenderWithUser" parameterType="int"
+		resultMap="allGender">
+		select 
+			gender.id as c_id,
+			gender.c_name,
+			gender.c_teacher,
+			user.*
+		 from gender,user where gender.id=user.c_id and
+		gender.id= #{id}
+	</select>
+
+	<resultMap type="gender" id="allGender">
+		<id column="c_id" property="id" />
+		<id column="c_name" property="name" />
+		<id column="c_teacher" property="teacher" />
+		<collection property="list" ofType="user">
+			<id column="id" property="id" />
+			<id column="username" property="username"/>
+			<id column="password" property="password"/>
+			<id column="phone" property="phone"/>
+			<id column="address" property="address"/>
+			<id column="email" property="email"/>
+			<id column="c_id" property="c_id"/>
+			
+		</collection>
+	</resultMap>
+	
+	 -->
+
+
+  	<!--②嵌套查询一对多 __嵌套查询 -->
+  	<resultMap id="allGender" type="gender">
+  		<id column="id" property="id" />
+		<id column="c_name" property="name" />
+		<id column="c_teacher" property="teacher" />
+  	
+  		<collection property="list" javaType="ArrayList" column="id" ofType="user" select="selectUserForGender"/>
+  	</resultMap>
+
+	<select id="selectGenderWithUser" resultMap="allGender" parameterType="int">
+ 	 SELECT * FROM gender WHERE ID = #{id}
+	</select>
+
+	<select id="selectUserForGender" resultType="user">
+  		SELECT * FROM user WHERE c_id = #{id}
+	</select>
+
+
+</mapper>

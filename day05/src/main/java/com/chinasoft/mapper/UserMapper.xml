@@ -1,0 +1,64 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+  PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+  "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.chinasoft.mapper.UserMapper">
+
+	<!-- 开启二级缓存 -->
+	<cache />
+
+	<insert id="addUserNoPar">
+		insert into user (username,password)
+		values('郭富城','88888888')
+	</insert>
+	<insert id="addUserByPar"
+		parameterType="com.chinasoft.pojo.User">
+		insert into user
+		(id,username,password,phone,address,email)
+		values(#{id},#{username},#{password},#{phone},#{address},#{email})
+	</insert>
+
+	<!--更具想要的字段排序 -->
+	<select id="selectOrderBy" parameterType="string"
+		resultType="user">
+		select * from user order by ${column}
+	</select>
+
+	<!--查询一个用户 -->
+	<select resultType="User" id="selectOneByPar"
+		parameterType="int">
+		select * from user where id = #{aaa}
+	</select>
+
+	<!--登录功能 -->
+	<select resultType="User" id="selectLogin" parameterType="user">
+		select
+		* from user where username= #{username} and
+		password=#{password}
+	</select>
+
+	<!--动态sql ————if -->
+	<select id="findUserWith_if" resultType="user"
+		parameterType="user">
+		SELECT * FROM user
+		WHERE username = #{username}
+		<if test="password != null">
+			AND password = #{password}
+		</if>
+	</select>
+
+
+	<!--动态sql ————foreach -->
+
+	<select id="findUsersWithList" parameterType="list"
+		resultType="user">
+		SELECT *
+		FROM user u
+		WHERE ID in
+		<foreach item="item" index="index" collection="list" open="("
+			separator="," close=")">
+			#{item}
+		</foreach>
+
+	</select>
+</mapper>
